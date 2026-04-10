@@ -1,0 +1,16 @@
+class Solution {
+public:
+    bool checkOnesSegment(string s) {
+
+        
+        bool ans;
+        
+
+        if(s.find("01")==string::npos) ans= true;
+        else ans= false;
+
+        
+        return ans;
+        
+    }
+};
