@@ -1,0 +1,40 @@
+class Solution {
+public:
+    vector<vector<int>> constructProductMatrix(vector<vector<int>>& grid) {
+        int n= grid.size();
+        int m= grid[0].size();
+        int size= n*m;
+        vector<int>prefix(size,1);
+        vector<int>suffix(size,1);
+        vector<vector<int>>v(n, vector<int>(m));
+        for(int i=1;i<size;i++){
+            int row= (i-1)/m;
+            int col= (i-1)%m;
+            int row2= (size-i)/m;
+            int col2= (size-i)%m;
+            
+            if(i>0){
+                prefix[i]= (((prefix[i-1])%12345)*
+                            ((grid[row][col])%12345))%12345;
+                suffix[size-1-i]= (((suffix[size-i])%12345)*
+                            ((grid[row2][col2])%12345))%12345;
+            }
+
+            
+
+        }
+
+        for(int i=0;i<size;i++){
+
+            int rorg= i/m;
+            int corg= i%m;
+
+            v[rorg][corg]= (prefix[i]*suffix[i])%12345;
+
+
+        }
+
+        return v;
+        
+    }
+};
