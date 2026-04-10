@@ -1,0 +1,48 @@
+class Solution {
+private:
+    bool check(long long T, int mountainHeight, const vector<int>& workerTimes) {
+        long long total_reduced = 0;
+        for (int t : workerTimes) {
+            long long max_val = (T * 2) / t;
+            long long l = 0, r = mountainHeight;
+            long long x = 0;
+            
+            while (l <= r) {
+                long long m = l + (r - l) / 2;
+                if (m * (m + 1) <= max_val) {
+                    x = m;
+                    l = m + 1;
+                } else {
+                    r = m - 1;
+                }
+            }
+            total_reduced += x;
+            if (total_reduced >= mountainHeight) return true;
+        }
+        return total_reduced >= mountainHeight;
+    }
+
+public:
+    long long minNumberOfSeconds(int mountainHeight, vector<int>& workerTimes) {
+        long long min_t = workerTimes[0];
+        for (int t : workerTimes) {
+            if (t < min_t) min_t = t;
+        }
+        
+        long long low = 0;
+        long long high = min_t * (long long)mountainHeight * (mountainHeight + 1) / 2;
+        long long ans = high;
+        
+        while (low <= high) {
+            long long mid = low + (high - low) / 2;
+            if (check(mid, mountainHeight, workerTimes)) {
+                ans = mid;
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        
+        return ans;
+    }
+};
