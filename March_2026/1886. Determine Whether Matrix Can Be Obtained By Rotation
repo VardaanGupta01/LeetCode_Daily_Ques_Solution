@@ -1,0 +1,33 @@
+class Solution {
+public:
+    bool findRotation(vector<vector<int>>& mat, vector<vector<int>>& target) {
+        
+        int n= mat.size();
+
+        vector<vector<int>>m90(n,vector<int>(n,0));
+        vector<vector<int>>m180(n,vector<int>(n,0));
+        vector<vector<int>>m270(n,vector<int>(n,0));
+
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                m90[j][n-1-i]=mat[i][j];
+            }
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                m180[j][n-1-i]=m90[i][j];
+            }
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                m270[j][n-1-i]=m180[i][j];
+            }
+        }
+
+        if((target== mat)|| (target== m90)|| 
+            (target== m270)|| (target== m180)  ) return true;
+
+        return false;
+        
+    }
+};
