@@ -1,0 +1,46 @@
+class Solution {
+public:
+    string getHappyString(int n, int k) {
+        string ans = "";
+        
+        int tot_strings = 3 * (1 << (n - 1)); 
+        
+        if (k > tot_strings) {
+            return "";
+        }
+        
+        int blocksize = 1 << (n - 1); 
+        int blocknum = (k + blocksize - 1) / blocksize; 
+        
+        if (blocknum == 1) ans += 'a';
+        else if (blocknum == 2) ans += 'b';
+        else ans += 'c';
+        
+       
+        int stringnum = k - (blocknum - 1) * blocksize;
+        blocksize /= 2; 
+        
+        for (int i = 1; i < n; i++) {
+          
+            int next_blocknum = (stringnum + blocksize - 1) / blocksize;
+            
+            char last_char = ans.back(); 
+            char choice1, choice2;
+            
+            if (last_char == 'a') { choice1 = 'b'; choice2 = 'c'; }
+            else if (last_char == 'b') { choice1 = 'a'; choice2 = 'c'; }
+            else { choice1 = 'a'; choice2 = 'b'; } 
+            
+            if (next_blocknum == 1) {
+                ans += choice1;
+            } else {
+                ans += choice2;
+            }
+            
+            stringnum = stringnum - (next_blocknum - 1) * blocksize;
+            blocksize /= 2;
+        }
+
+        return ans;
+    }
+};
