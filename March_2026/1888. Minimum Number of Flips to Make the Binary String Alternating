@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int minFlips(string s) {
+        int n = s.size();
+        string target = s + s;
+        
+        int diff01 = 0, diff10 = 0;
+        int ans = INT_MAX;
+        
+        for(int i = 0; i < 2 * n; i++) {
+            
+            if (target[i] != (i % 2 == 0 ? '0' : '1')) diff01++;
+            if (target[i] != (i % 2 == 0 ? '1' : '0')) diff10++;
+            
+            
+            if (i >= n) {
+                int l = i - n;
+               
+                if (target[l] != (l % 2 == 0 ? '0' : '1')) diff01--;
+                if (target[l] != (l % 2 == 0 ? '1' : '0')) diff10--;
+            }
+            
+            
+            if (i >= n - 1) {
+                ans = min({ans, diff01, diff10});
+            }
+        }
+        
+        return ans;
+    }
+};
