@@ -1,0 +1,100 @@
+class Solution {
+public:
+    bool canPartitionGrid(vector<vector<int>>& grid) {
+        long long int row = grid.size();
+        long long int col = grid[0].size();
+        long long tot_sum = 0;
+        vector<long long int> row_sum(row, 0);
+        vector<long long int> col_sum(col, 0);
+        unordered_map<long long, int> total_freq;
+
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                row_sum[i] += grid[i][j];
+                col_sum[j] += grid[i][j];
+                total_freq[grid[i][j]]++;
+                tot_sum += grid[i][j];
+            }
+        }
+        
+        long long int curr_row = 0;
+        unordered_map<long long int, int> top_freq;
+        
+        // Horizontal Cuts
+        for(int i = 0; i < row - 1; i++){
+            for(int j = 0; j < col; j++) top_freq[grid[i][j]]++;
+
+            curr_row += row_sum[i];
+            long long bottom_sum = tot_sum - curr_row;
+            long long diff = abs(curr_row - bottom_sum);
+            
+            if(diff == 0) return true;
+            
+            if(curr_row > bottom_sum){
+                // Top section se hatana hai. Top section 1D tab hai jab ya toh sirf 1 row ho (i==0) ya 1 column ho (col==1)
+                if(i == 0 || col == 1){ 
+                    int size = (i + 1) * col;
+                    long long end1 = grid[0][0];
+                    long long end2 = (i == 0) ? grid[0][col - 1] : grid[i][0];
+                    if(size > 1 && (end1 == diff || end2 == diff)) return true;
+                }
+                else { // 2D section
+                    if(top_freq.count(diff)) return true;
+                }
+            }
+            else {
+                // Bottom section se hatana hai. Bottom section 1D tab hai jab ya toh sirf 1 row ho (i==row-2) ya 1 col ho (col==1)
+                if(i == row - 2 || col == 1){
+                    int size = (row - 1 - i) * col;
+                    long long end1 = grid[row - 1][0];
+                    long long end2 = (i == row - 2) ? grid[row - 1][col - 1] : grid[i + 1][0];
+                    if(size > 1 && (end1 == diff || end2 == diff)) return true;
+                }
+                else { // 2D section
+                    if(total_freq.count(diff) && (total_freq[diff] - top_freq[diff]) > 0) return true;
+                }
+            }
+        }
+
+        long long int curr_col = 0;
+        unordered_map<long long int, int> left_freq;
+        
+        // Vertical Cuts
+        for(int i = 0; i < col - 1; i++){
+            for(int j = 0; j < row; j++) left_freq[grid[j][i]]++;
+
+            curr_col += col_sum[i];
+            long long right_sum = tot_sum - curr_col;
+            long long diff = abs(curr_col - right_sum);
+            
+            if(diff == 0) return true;
+            
+            if(curr_col > right_sum){
+                // Left section se hatana hai
+                if(i == 0 || row == 1){
+                    int size = (i + 1) * row;
+                    long long end1 = grid[0][0];
+                    long long end2 = (i == 0) ? grid[row - 1][0] : grid[0][i];
+                    if(size > 1 && (end1 == diff || end2 == diff)) return true;
+                }
+                else {
+                    if(left_freq.count(diff)) return true;
+                }
+            }
+            else {
+                // Right section se hatana hai
+                if(i == col - 2 || row == 1){
+                    int size = (col - 1 - i) * row;
+                    long long end1 = grid[0][col - 1];
+                    long long end2 = (i == col - 2) ? grid[row - 1][col - 1] : grid[0][i + 1];
+                    if(size > 1 && (end1 == diff || end2 == diff)) return true;
+                }
+                else {
+                    if(total_freq.count(diff) && (total_freq[diff] - left_freq[diff]) > 0) return true;
+                }
+            }
+        }
+
+        return false;
+    }
+};
