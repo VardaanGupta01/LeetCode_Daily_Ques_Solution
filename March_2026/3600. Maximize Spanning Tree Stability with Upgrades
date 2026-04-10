@@ -1,0 +1,103 @@
+class Solution {
+private:
+    struct DSU {
+        vector<int> parent, rank;
+        int comps;
+        DSU(int n) {
+            parent.resize(n);
+            rank.resize(n, 0);
+            comps = n;
+            for (int i = 0; i < n; i++) parent[i] = i;
+        }
+        int find(int i) {
+            if (parent[i] == i) return i;
+            return parent[i] = find(parent[i]); 
+        }
+        bool unite(int i, int j) {
+            int root_i = find(i);
+            int root_j = find(j);
+            if (root_i != root_j) {
+                if (rank[root_i] < rank[root_j]) {
+                    parent[root_i] = root_j;
+                } else if (rank[root_i] > rank[root_j]) {
+                    parent[root_j] = root_i;
+                } else {
+                    parent[root_j] = root_i;
+                    rank[root_i]++;
+                }
+                comps--;
+                return true;
+            }
+            return false;
+        }
+    };
+
+    
+    bool check(long long X, int n, vector<vector<int>>& edges, int k) {
+        DSU dsu(n);
+        int upgrades = 0;
+
+        
+        for (auto& e : edges) {
+            if (e[3] == 1) {
+                if (e[2] < X) return false;
+                dsu.unite(e[0], e[1]);
+            }
+        }
+
+        for (auto& e : edges) {
+            if (e[3] == 0 && e[2] >= X) {
+                dsu.unite(e[0], e[1]);
+            }
+        }
+
+        for (auto& e : edges) {
+            
+            if (e[3] == 0 && e[2] < X && 2LL * e[2] >= X) {
+                if (dsu.unite(e[0], e[1])) {
+                    upgrades++;
+                }
+            }
+        }
+
+        
+        return (dsu.comps == 1) && (upgrades <= k);
+    }
+
+public:
+    int maxStability(int n, vector<vector<int>>& edges, int k) {
+       
+        DSU dsu_all(n);
+        DSU dsu_must(n);
+        
+        for (auto& e : edges) {
+            dsu_all.unite(e[0], e[1]);
+            if (e[3] == 1) {
+                
+                if (!dsu_must.unite(e[0], e[1])) {
+                    return -1; 
+                }
+            }
+        }
+        
+        
+        if (dsu_all.comps > 1) return -1; 
+
+       
+        long long low = 0, high = 2e9; 
+        int ans = -1;
+        
+        while (low <= high) {
+            long long mid = low + (high - low) / 2;
+            
+            if (check(mid, n, edges, k)) {
+                ans = mid;
+                low = mid + 1; 
+            } else {
+                high = mid - 1; 
+            }
+        }
+        
+        return ans;
+    }
+};
