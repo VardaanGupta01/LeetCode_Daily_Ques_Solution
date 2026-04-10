@@ -1,0 +1,27 @@
+#pragma GCC optimize("O3", "unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+class Solution {
+    const int mod= 1000000007;
+public:
+    int xorAfterQueries(vector<int>& nums, vector<vector<int>>& queries) {
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
+        for(const auto& q: queries){
+            int idx= q[0];
+            int r= q[1];
+            int k= q[2];
+            int v= q[3];
+            while(idx<=r){
+                long long temp= 1LL*(nums[idx]) * (v);
+                nums[idx]= (temp) % (mod);
+                idx+=k;
+            }
+        }
+        int ans=0;
+        for(int i=0;i<nums.size();i++){
+            ans= (ans^nums[i]);
+        }
+        return ans;
+        
+    }
+};
