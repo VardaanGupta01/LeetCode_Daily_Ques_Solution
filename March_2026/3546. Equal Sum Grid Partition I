@@ -1,0 +1,37 @@
+class Solution {
+public:
+    bool canPartitionGrid(vector<vector<int>>& grid) {
+        long long int row= grid.size();
+        long long int col= grid[0].size();
+        vector<long long int>row_sum(row,0);
+        vector<long long int>col_sum(col,0);
+
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++){
+                row_sum[i]+=grid[i][j];
+                col_sum[j]+=grid[i][j];
+            }
+        }
+        long long int tot_row= accumulate(row_sum.begin(), row_sum.end(),0LL);
+        long long int tot_col= accumulate(col_sum.begin(), col_sum.end(),0LL);
+
+        
+        long long int curr_row=0;
+        long long int curr_col=0;
+        for(int i=0;i<row-1;i++){
+
+            curr_row+=row_sum[i];
+            if((tot_row-curr_row) == curr_row) return true;
+
+        }
+        for(int i=0;i<col-1;i++){
+
+            curr_col+=col_sum[i];
+            if((tot_col-curr_col) == curr_col) return true;
+
+        }
+
+        return false;
+        
+    }
+};
