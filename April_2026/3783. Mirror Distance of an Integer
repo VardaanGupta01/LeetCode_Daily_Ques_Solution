@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int mirrorDistance(int n) {
+        int temp=n;
+        int mirr=0;
+        while(temp){
+            mirr*=10;
+            int num= temp%10;
+            mirr+=num;
+            temp/=10;
+        }
+        return abs(mirr-n);
+        
+        
+    }
+};
